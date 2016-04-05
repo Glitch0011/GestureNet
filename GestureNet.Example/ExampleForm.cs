@@ -49,16 +49,25 @@ namespace GestureNet.Example
 
                 if (args.Button == MouseButtons.Left)
                 {
-                    var guess = PointCloudRecognizer.Classify(new Gesture(points), trainingSet);
+					try
+					{
+						var guess = PointCloudRecognizer.Classify(new Gesture(points), trainingSet);
 
-                    label1.Text = string.Join(Environment.NewLine, guess.Select(x => x));
+						label1.Text = string.Join(Environment.NewLine, guess.Select(x => x));
+					}
+					catch (ArgumentException)
+					{
+						return;
+					}
+					finally 
+					{
+						points.Clear();
+					}
                 }
                 else if (args.Button == MouseButtons.Right)
                 {
                     trainingSet.Add(new Gesture(points, textBox1.Text));
                 }
-
-                points.Clear();
             };
 
             mouseRecorder.Tick += (o, args) =>

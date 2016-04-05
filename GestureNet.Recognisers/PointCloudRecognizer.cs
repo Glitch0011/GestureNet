@@ -82,7 +82,7 @@ namespace GestureNet.Recognisers
                 var index = -1;
                 var minDistance = float.MaxValue;
 
-                for (var j = 0; j < n; j++)
+                for (var j = 0; j < Math.Min(points1.Count, points2.Count); j++)
                     if (!matched[j])
                     {
                         // use squared Euclidean distance to save some processing time
@@ -95,13 +95,16 @@ namespace GestureNet.Recognisers
                         }
                     }
 
-                matched[index] = true; // point index from the 2nd cloud is matched to point i from the 1st cloud
-                var weight = 1.0f - (i - startIndex + n)%n/(1.0f*n);
+				if (index != -1)
+				{
+					matched[index] = true; // point index from the 2nd cloud is matched to point i from the 1st cloud
+					var weight = 1.0f - (i - startIndex + n) % n / (1.0f * n);
 
-                // weight each distance with a confidence coefficient that decreases from 1 to 0
-                sum += weight*minDistance;
+					// weight each distance with a confidence coefficient that decreases from 1 to 0
+					sum += weight * minDistance;
 
-                i = (i + 1)%n;
+					i = (i + 1) % n;
+				}
 
             } while (i != startIndex);
             return sum;

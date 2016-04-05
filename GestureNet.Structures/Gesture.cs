@@ -29,6 +29,14 @@ namespace GestureNet.Structures
             Points = Scale(points);
             Points = TranslateTo(Points, Centroid(Points));
             Points = Resample(Points, SamplingResolution);
+
+			if (Points.Count == 1)
+			{
+				if (float.IsNaN(Points[0].X))
+					throw new ArgumentException();
+				if (float.IsNaN(Points[0].Y))
+					throw new ArgumentException();
+			}
         }
         
         /// <summary>
