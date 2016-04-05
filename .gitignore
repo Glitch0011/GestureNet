@@ -234,3 +234,6 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+GestureNet.Example/ExampleForm.Designer.cs
+GestureNet.Example/Properties/Resources.Designer.cs
+GestureNet.Example/Properties/Settings.Designer.cs
