@@ -16,7 +16,7 @@ Returns a list of possible Gestures in order of likelyhood.
 
 Add's a pre-normalised Gesture to the training set.
 
-`trainingSet.Add(new Gesture(points, textBox1.Text));`
+`trainingSet.Add(new Gesture(points, gestureName));`
 
 ## Save Gestures
 
