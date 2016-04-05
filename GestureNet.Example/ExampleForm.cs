@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using GestureNet.Recognisers;
 using GestureNet.Structures;
 using Point = GestureNet.Structures.Point;
+using GestureNet.IO;
 
 namespace GestureNet.Example
 {
@@ -36,7 +37,7 @@ namespace GestureNet.Example
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            trainingSet = IO.GestureLoader.ReadGesture(new FileInfo("data.bin")).ToList();
+            trainingSet = GestureLoader.ReadGestures(new FileInfo("data.bin")).ToList();
 
             MouseDown += (o, args) =>
             {
@@ -101,7 +102,7 @@ namespace GestureNet.Example
 
             this.Closing += (o, args) =>
             {
-                IO.GestureLoader.SaveGestures(new FileInfo("data.bin"), trainingSet);
+                GestureLoader.SaveGestures(new FileInfo("data.bin"), trainingSet);
             };
         }
 
@@ -128,7 +129,7 @@ namespace GestureNet.Example
         {
             return
                 new DirectoryInfo(Environment.CurrentDirectory).GetFiles("*.xml", SearchOption.AllDirectories)
-                    .SelectMany(IO.GestureLoader.ReadGesture)
+                    .SelectMany(IO.GestureLoader.ReadGestures)
                     .Where(x => x != null);
         }
     }

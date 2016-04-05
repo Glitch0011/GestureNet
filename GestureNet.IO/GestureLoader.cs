@@ -8,7 +8,7 @@ namespace GestureNet.IO
 {
     public class GestureLoader
     {
-        public static IEnumerable<Gesture> ReadGesture(FileInfo fileInfo)
+        public static IEnumerable<Gesture> ReadGestures(FileInfo fileInfo)
         {
             if (fileInfo.Exists)
             {
