@@ -82,24 +82,19 @@ namespace GestureNet.WPFExample
             }
         }
 
-        public object obj = new object();
-
         private void DetectionTimer_Elapsed(object sender, EventArgs e)
         {
-            if (Monitor.TryEnter(obj, TimeSpan.FromMilliseconds(5)))
+            var process = false;
+
+            Dispatcher.Invoke(() =>
             {
-                var process = false;
+                if (chkLiveRecognition.IsChecked.HasValue && chkLiveRecognition.IsChecked.Value)
+                    process = true; 
+            });
 
-                Dispatcher.Invoke(() =>
-                {
-                    if (chkLiveRecognition.IsChecked.HasValue && chkLiveRecognition.IsChecked.Value)
-                        process = true; 
-                });
-
-                if (process)
-                {
-                    UpdateResults();
-                }
+            if (process)
+            {
+                UpdateResults();
             }
         }
 
