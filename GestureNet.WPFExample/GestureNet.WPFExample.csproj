@@ -103,6 +103,20 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GestureNet.IO\GestureNet.IO.csproj">
+      <Project>{abc86958-e578-4a72-9312-12eb8da5c371}</Project>
+      <Name>GestureNet.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestureNet.Recognisers\GestureNet.Recognisers.csproj">
+      <Project>{93c1f07e-de65-494b-85c8-03e4c746ae8a}</Project>
+      <Name>GestureNet.Recognisers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestureNet.Structures\GestureNet.Structures.csproj">
+      <Project>{8bdeee18-6ed9-4475-8f95-b4def66317d4}</Project>
+      <Name>GestureNet.Structures</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
