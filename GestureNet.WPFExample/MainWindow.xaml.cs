@@ -34,9 +34,19 @@ namespace GestureNet.WPFExample
 
         private List<Gesture> TrainingSet { get; }
 
-        private float SmoothDistance { get; } = 10.0f;
+        /// <summary>
+        /// Minimum distance between points when smoothed
+        /// </summary>
+        private float SmoothDistance { get; } = 5.0f;
+
+        /// <summary>
+        /// Smoothness of the CatmullRom filter
+        /// </summary>
         private float Smoothness { get; } = 0.1f;
 
+        /// <summary>
+        /// Runs the points though a CatmullRom filter and then translate then into Windows.Points
+        /// </summary>
         private IEnumerable<Point> SmoothPoints
         {
             get
@@ -48,6 +58,9 @@ namespace GestureNet.WPFExample
             }
         }
 
+        /// <summary>
+        /// Run the points through a CatmullRom filter
+        /// </summary>
         private IReadOnlyList<Vector2> SmoothGesturePoints
         {
             get
@@ -58,6 +71,9 @@ namespace GestureNet.WPFExample
             }
         }
 
+        /// <summary>
+        /// Main Window constructor
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -76,6 +92,11 @@ namespace GestureNet.WPFExample
             }
         }
 
+        /// <summary>
+        /// Detect weither we are performing live-recognition, and if so, asyncronously to the UI thread, try recognise the current points
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DetectionTimer_Elapsed(object sender, EventArgs e)
         {
             var process = false;
@@ -87,11 +108,14 @@ namespace GestureNet.WPFExample
             });
 
             if (process)
-            {
                 UpdateResults();
-            }
         }
 
+        /// <summary>
+        /// Locate where the mouse currently is, and add it to a list of current points
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RecordingTimer_Elapsed(object sender, EventArgs e)
         {
             //Protect against two timer events overlapping
@@ -122,6 +146,8 @@ namespace GestureNet.WPFExample
                         if (long.TryParse(txtNumeric.Text, out mi))
                             Points.RemoveAll(x => (DateTime.Now - x.Creation).TotalMilliseconds > mi);
 
+                        var s = this.SmoothPoints;
+
                         RenderControl.InvalidateVisual();
                     });
                 }
@@ -136,6 +162,9 @@ namespace GestureNet.WPFExample
             }
         }
 
+        /// <summary>
+        /// Classify the current points and update the dynamic-list on the UI
+        /// </summary>
         private void UpdateResults()
         {
             try
@@ -155,24 +184,41 @@ namespace GestureNet.WPFExample
             }
         }
 
+        /// <summary>
+        /// Initiate the recording of points
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GestureCanvas_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             StartRecording();
         }
 
+        /// <summary>
+        /// Initiate the recording and classification of points
+        /// </summary>
         private void StartRecording()
         {
             RecordingTimer.Start();
             RecognitionTimer.Start();
         }
 
+        /// <summary>
+        /// Stop the recording and classification of points
+        /// </summary>
         private void StopRecording()
         {
             RecordingTimer.Stop();
             RecognitionTimer.Stop();
             Points.Clear();
+            RenderControl.InvalidateVisual();
         }
 
+        /// <summary>
+        /// When the mouse is released, either classify the points, or stop them as a new gesture
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GestureCanvas_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -198,6 +244,11 @@ namespace GestureNet.WPFExample
             }
         }
 
+        /// <summary>
+        /// When the window closes safely, save the gestures to a file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
             GestureLoader.SaveGestures(new FileInfo("gestures.json"), TrainingSet);
