@@ -72,10 +72,11 @@ namespace GestureNet.Recognisers
         private static float CloudDistance(IReadOnlyList<IPoint> points1, IReadOnlyList<IPoint> points2, int startIndex)
         {
             var n = points1.Count; // the two clouds should have the same number of points by now
+
             var matched = new bool[n]; // matched[i] signals whether point i from the 2nd cloud has been already matched
 
             float sum = 0;
-                // computes the sum of distances between matched points (i.e., the distance between the two clouds)
+            // computes the sum of distances between matched points (i.e., the distance between the two clouds)
             var i = startIndex;
             do
             {
@@ -95,17 +96,17 @@ namespace GestureNet.Recognisers
                         }
                     }
 
-				if (index != -1)
-				{
-					matched[index] = true; // point index from the 2nd cloud is matched to point i from the 1st cloud
-					var weight = 1.0f - (i - startIndex + n) % n / (1.0f * n);
+                if (index != -1)
+                {
+                    matched[index] = true; // point index from the 2nd cloud is matched to point i from the 1st cloud
 
-					// weight each distance with a confidence coefficient that decreases from 1 to 0
-					sum += weight * minDistance;
+                    var weight = 1.0f - (i - startIndex + n)%n/(1.0f*n);
 
-					i = (i + 1) % n;
-				}
+                    // weight each distance with a confidence coefficient that decreases from 1 to 0
+                    sum += weight*minDistance;
 
+                    i = (i + 1)%n;
+                }
             } while (i != startIndex);
             return sum;
         }
