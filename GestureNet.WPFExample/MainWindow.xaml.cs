@@ -49,13 +49,7 @@ namespace GestureNet.WPFExample
         /// </summary>
         private IEnumerable<Point> SmoothPoints
         {
-            get
-            {
-                return
-                    CatmullRom.Smooth(Points.Select(x => new Vector2(x.Point.X, x.Point.Y)).ToList(), SmoothDistance,
-                        Smoothness)
-                        .Select(p => new Point(p.X, p.Y)).ToList();
-            }
+            get { return SmoothGesturePoints.Select(p => new Point(p.X, p.Y)).ToList(); }
         }
 
         /// <summary>
