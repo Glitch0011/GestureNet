@@ -139,7 +139,7 @@ namespace GestureNet.WPFExample
         {
             try
             {
-                ResultsView.ItemsSource = PointCloudRecognizer.AverageClassify(new Gesture(SmoothGesturePoints),
+                ResultsView.ItemsSource = PointCloudRecognizer.Classify(new Gesture(SmoothGesturePoints),
                     TrainingSet);
             }
             catch (ArgumentException)
