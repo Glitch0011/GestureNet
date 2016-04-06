@@ -25,6 +25,9 @@ namespace GestureNet.Structures
         {
             Name = gestureName;
 
+            if (points.Count == 0)
+                throw new ArgumentException("Can not have zero points");
+
             // normalizes the array of points with respect to scale, origin, and number of points
             Points = Scale(points);
             Points = TranslateTo(Points, Centroid(Points));
