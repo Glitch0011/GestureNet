@@ -50,12 +50,17 @@ namespace GestureNet.WPFExample
             TrainingSet = GestureLoader.ReadGestures(new FileInfo("gestures.json")).ToList();
         }
 
+        private float SmoothDistance { get; } = 10.0f;
+        private float Smoothness { get; } = 0.1f;
+
         private IEnumerable<System.Windows.Point> SmoothPoints
         {
             get
             {
-                return CatmullRom.Smooth(Points.Select(x => new Vector2(x.Point.X, x.Point.Y)).ToList(), 10.0f, 0.1f)
-                    .Select(p => new System.Windows.Point(p.X, p.Y)).ToList();
+                return
+                    CatmullRom.Smooth(Points.Select(x => new Vector2(x.Point.X, x.Point.Y)).ToList(), SmoothDistance,
+                        Smoothness)
+                        .Select(p => new System.Windows.Point(p.X, p.Y)).ToList();
             }
         }
 
@@ -63,8 +68,10 @@ namespace GestureNet.WPFExample
         {
             get
             {
-                return CatmullRom.Smooth(Points.Select(x => new Vector2(x.Point.X, x.Point.Y)).ToList(), 10.0f, 0.1f)
-                    .Select(p => new Point(p.X, p.Y, 0)).ToList();
+                return
+                    CatmullRom.Smooth(Points.Select(x => new Vector2(x.Point.X, x.Point.Y)).ToList(), SmoothDistance,
+                        Smoothness)
+                        .Select(p => new Point(p.X, p.Y, 0)).ToList();
             }
         }
 
