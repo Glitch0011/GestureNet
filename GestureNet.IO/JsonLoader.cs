@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 
 namespace GestureNet.IO
 {
@@ -13,7 +14,7 @@ namespace GestureNet.IO
 			var obj = JArray.Parse(File.ReadAllText(file.FullName));
 
 			return obj.Select(gesture => new Gesture(
-				gesture["Points"].Select(x => new Point((float)x["X"], (float)x["Y"], (int)x["StrokeId"]))
+				gesture["Points"].Select(x => new Vector2((float)x["X"], (float)x["Y"]))
 					.ToList(), (string)gesture["Name"]));
 		}
 

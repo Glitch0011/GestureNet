@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Xml;
 using GestureNet.Structures;
 
@@ -8,9 +9,9 @@ namespace GestureNet.IO
 {
     internal class XmlLoader : ILoader
     {
-		public IEnumerable<Gesture> Load(FileInfo file)
+        public IEnumerable<Gesture> Load(FileInfo file)
         {
-            var points = new List<Point>();
+            var points = new List<Vector2>();
             XmlTextReader xmlReader = null;
             var currentStrokeIndex = -1;
             var gestureName = string.Empty;
@@ -36,10 +37,9 @@ namespace GestureNet.IO
                             currentStrokeIndex++;
                             break;
                         case "Point":
-                            points.Add(new Point(
+                            points.Add(new Vector2(
                                 float.Parse(xmlReader["X"]),
-                                float.Parse(xmlReader["Y"]),
-                                currentStrokeIndex
+                                float.Parse(xmlReader["Y"])
                                 ));
                             break;
                         default:
@@ -70,13 +70,9 @@ namespace GestureNet.IO
                     var currentStroke = -1;
                     for (var i = 0; i < gesture.Points.Count; i++)
                     {
-                        if (gesture.Points[i].StrokeId != currentStroke)
-                        {
-                            if (i > 0)
-                                sw.WriteLine("\t</Stroke>");
-                            sw.WriteLine("\t<Stroke>");
-                            currentStroke = gesture.Points[i].StrokeId;
-                        }
+                        if (i > 0)
+                            sw.WriteLine("\t</Stroke>");
+                        sw.WriteLine("\t<Stroke>");
 
                         sw.WriteLine("\t\t<Point X = \"{0}\" Y = \"{1}\" T = \"0\" Pressure = \"0\" />",
                             gesture.Points[i].X, gesture.Points[i].Y);
@@ -86,5 +82,5 @@ namespace GestureNet.IO
                 }
             }
         }
-	}
+    }
 }

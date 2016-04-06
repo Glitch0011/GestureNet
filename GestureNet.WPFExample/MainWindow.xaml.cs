@@ -15,7 +15,6 @@ using System.Windows.Media;
 using GestureNet.IO;
 using GestureNet.Recognisers;
 using GestureNet.Structures;
-using Point = GestureNet.Structures.Point;
 using Timer = System.Timers.Timer;
 
 namespace GestureNet.WPFExample
@@ -65,20 +64,19 @@ namespace GestureNet.WPFExample
             get
             {
                 return
-                    CatmullRom.Smooth(Points.Select(x => new Vector2(x.Point.X, x.Point.Y)).ToList(), SmoothDistance,
+                    CatmullRom.Smooth(Points.Select(x => new Vector2((float)x.Point.X, (float)x.Point.Y)).ToList(), SmoothDistance,
                         Smoothness)
                         .Select(p => new System.Windows.Point(p.X, p.Y)).ToList();
             }
         }
 
-        private IReadOnlyList<Point> SmoothGesturePoints
+        private IReadOnlyList<Vector2> SmoothGesturePoints
         {
             get
             {
                 return
                     CatmullRom.Smooth(Points.Select(x => new Vector2(x.Point.X, x.Point.Y)).ToList(), SmoothDistance,
-                        Smoothness)
-                        .Select(p => new Point(p.X, p.Y, 0)).ToList();
+                        Smoothness).ToList();
             }
         }
 
@@ -120,7 +118,7 @@ namespace GestureNet.WPFExample
 
                         Points.Add(new TimedPoint
                         {
-                            Point = new Point((float) mousePos.X, (float) mousePos.Y, 0),
+                            Point = new Vector2((float) mousePos.X, (float) mousePos.Y),
                             Creation = DateTime.Now
                         });
 
@@ -239,7 +237,7 @@ namespace GestureNet.WPFExample
     public struct TimedPoint
     {
         public DateTime Creation { get; set; }
-        public Point Point { get; set; }
+        public Vector2 Point { get; set; }
     }
 
     public class RenderControl : UIElement
@@ -249,7 +247,6 @@ namespace GestureNet.WPFExample
         protected override void OnRender(DrawingContext drawingContext)
         {
             var myPen = new Pen(Brushes.Black, 10);
-
             var myBluePen = new Pen(Brushes.LightBlue, 10);
 
             drawingContext.DrawRectangle(Brushes.LightBlue, myBluePen, new Rect(0, 0, RenderSize.Width, RenderSize.Height));

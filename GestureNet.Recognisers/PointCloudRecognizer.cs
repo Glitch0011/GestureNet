@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using GestureNet.Structures;
 
 namespace GestureNet.Recognisers
@@ -45,7 +46,7 @@ namespace GestureNet.Recognisers
         /// <param name="points1"></param>
         /// <param name="points2"></param>
         /// <returns></returns>
-        private static float GreedyCloudMatch(IReadOnlyList<IPoint> points1, IReadOnlyList<IPoint> points2)
+        private static float GreedyCloudMatch(IReadOnlyList<Vector2> points1, IReadOnlyList<Vector2> points2)
         {
             var n = points1.Count; // the two clouds should have the same number of points by now
             var step = (int) Math.Floor(Math.Pow(n, 1.0f - Eps));
@@ -69,7 +70,7 @@ namespace GestureNet.Recognisers
         /// <param name="points2"></param>
         /// <param name="startIndex"></param>
         /// <returns></returns>
-        private static float CloudDistance(IReadOnlyList<IPoint> points1, IReadOnlyList<IPoint> points2, int startIndex)
+        private static float CloudDistance(IReadOnlyList<Vector2> points1, IReadOnlyList<Vector2> points2, int startIndex)
         {
             var n = points1.Count; // the two clouds should have the same number of points by now
 
@@ -87,7 +88,7 @@ namespace GestureNet.Recognisers
                     if (!matched[j])
                     {
                         // use squared Euclidean distance to save some processing time
-                        var dist = Geometry.SqrEuclideanDistance(points1[i], points2[j]);
+                        var dist = Vector2.DistanceSquared(points1[i], points2[j]);
 
                         if (dist < minDistance)
                         {
