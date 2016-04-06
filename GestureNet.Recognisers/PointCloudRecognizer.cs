@@ -10,6 +10,10 @@ namespace GestureNet.Recognisers
     /// </summary>
     public static class PointCloudRecognizer
     {
+        /// <summary>
+        // controls the number of greedy search trials (eps is in [0..1])
+        /// </summary>
+        public static float Eps { get; } = 0.5f;
 
         /// <summary>
         ///     Main function of the $P recognizer.
@@ -36,8 +40,7 @@ namespace GestureNet.Recognisers
         private static float GreedyCloudMatch(IReadOnlyList<IPoint> points1, IReadOnlyList<IPoint> points2)
         {
             var n = points1.Count; // the two clouds should have the same number of points by now
-            var eps = 0.5f; // controls the number of greedy search trials (eps is in [0..1])
-            var step = (int) Math.Floor(Math.Pow(n, 1.0f - eps));
+            var step = (int) Math.Floor(Math.Pow(n, 1.0f - Eps));
             var minDistance = float.MaxValue;
 
             for (var i = 0; i < n; i += step)
