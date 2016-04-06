@@ -92,7 +92,7 @@ namespace GestureNet.WPFExample
                             Mouse.RightButton == MouseButtonState.Released)
                             RecordingTimer.Stop();
 
-                        Points.Add(new TimedPoint()
+                        Points.Add(new TimedPoint
                         {
                             Point = new Point((float) mousePos.X, (float) mousePos.Y, 0),
                             Creation = DateTime.Now
@@ -100,13 +100,10 @@ namespace GestureNet.WPFExample
 
                         long mi;
                         if (long.TryParse(txtNumeric.Text, out mi))
-                        {
                             Points.RemoveAll(x => (DateTime.Now - x.Creation).TotalMilliseconds > mi);
-                        }
 
                         if (Points.Count > 0)
                         {
-
                             var canvas = GestureCanvas;
 
                             canvas.Children.Clear();
@@ -124,7 +121,6 @@ namespace GestureNet.WPFExample
                             };
 
                             canvas.Children.Add(line);
-
                         }
 
                         if (chkLiveRecognition.IsChecked.HasValue && chkLiveRecognition.IsChecked.Value)
