@@ -124,7 +124,7 @@ namespace GestureNet.WPFExample
                             UpdateResults();
                     });
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Debugger.Break();
                 }
@@ -146,7 +146,7 @@ namespace GestureNet.WPFExample
             {
                 return;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Debugger.Break();
             }
@@ -179,7 +179,7 @@ namespace GestureNet.WPFExample
                 GestureCanvas.Children.Clear();
                 Points.Clear();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debugger.Break();
             }
