@@ -87,10 +87,14 @@ namespace GestureNet.WPFExample
                     Dispatcher.Invoke(() =>
                     {
                         mousePos = GestureCanvas.PointFromScreen(mousePos);
-
-                        if (Mouse.LeftButton == MouseButtonState.Released &&
-                            Mouse.RightButton == MouseButtonState.Released)
-                            RecordingTimer.Stop();
+                        
+                        if (!MouseUtilities.IsMouseButtonDown(MouseButton.Left) &&
+                            !MouseUtilities.IsMouseButtonDown(MouseButton.Right))
+                        {
+                            StopRecording();
+                            return;
+                        }
+                            
 
                         Points.Add(new TimedPoint
                         {
@@ -160,12 +164,17 @@ namespace GestureNet.WPFExample
             RecordingTimer.Start();
         }
 
+        private void StopRecording()
+        {
+            RecordingTimer.Stop();
+            GestureCanvas.Children.Clear();
+            Points.Clear();
+        }
+
         private void GestureCanvas_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             try
             {
-                RecordingTimer.Stop();
-
                 switch (e.ChangedButton)
                 {
                     case MouseButton.Left:
@@ -179,8 +188,7 @@ namespace GestureNet.WPFExample
                         break;
                 }
 
-                GestureCanvas.Children.Clear();
-                Points.Clear();
+                StopRecording();
             }
             catch (Exception)
             {
