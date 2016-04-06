@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using GestureNet.Structures;
-using Newtonsoft.Json.Linq;
 
 namespace GestureNet.IO
 {
