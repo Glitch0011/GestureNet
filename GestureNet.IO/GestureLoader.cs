@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace GestureNet.IO
 {
-    public class GestureLoader
+    public static class GestureLoader
     {
         public static IEnumerable<Gesture> ReadGestures(FileInfo fileInfo)
         {
