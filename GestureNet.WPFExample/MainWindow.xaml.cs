@@ -150,7 +150,8 @@ namespace GestureNet.WPFExample
             }
             catch (Exception e)
             {
-                Debugger.Break();
+                //Somtimes we'll hit a collection-modified exception
+                //Handling it like this is actually cheaper than locking it with the remove-all statement
             }
         }
 
