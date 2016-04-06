@@ -33,7 +33,7 @@
                     </DockPanel>
                     <StackPanel  Orientation="Horizontal">
                         <Label>Live Recognition:</Label>
-                        <TextBox Name="txtThreshold" VerticalAlignment="Center">0.2</TextBox>
+                        <TextBox Name="txtThreshold" VerticalAlignment="Center">0.3</TextBox>
                     </StackPanel>
                     <StackPanel  Orientation="Horizontal">
                         <Label>Status:</Label>
