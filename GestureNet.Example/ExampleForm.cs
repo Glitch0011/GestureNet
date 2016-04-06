@@ -54,7 +54,7 @@ namespace GestureNet.Example
 					{
 						var guess = PointCloudRecognizer.Classify(new Gesture(points), trainingSet);
 
-						label1.Text = string.Join(Environment.NewLine, guess.Select(x => x));
+                        label1.Text = string.Join(Environment.NewLine, guess.Select(x => x));
 					}
 					catch (ArgumentException)
 					{
