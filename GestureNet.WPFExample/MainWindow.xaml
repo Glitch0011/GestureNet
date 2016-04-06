@@ -8,6 +8,7 @@
         Title="MainWindow" Height="600" Width="1024" Closing="MainWindow_OnClosing">
     <Window.Resources>
         <local:ValueConverter x:Key="ScoreConverter" Threshhold="0.2"/>
+        <local:RenderControl x:Key="RenderControl"></local:RenderControl>
     </Window.Resources>
     <Grid>
         <Grid>
@@ -63,9 +64,9 @@
                     </ListView>
                 </StackPanel>
             </DockPanel>
-            <DockPanel Grid.Column="1" >
+            <DockPanel Grid.Column="1">
                 <Border>
-                    <Canvas Name="GestureCanvas"  MouseDown="GestureCanvas_OnMouseDown" MouseUp="GestureCanvas_OnMouseUp" Background="LightBlue"/>
+                    <local:RenderControl x:Name="RenderControl"  MouseDown="GestureCanvas_OnMouseDown" MouseUp="GestureCanvas_OnMouseUp"/>
                 </Border>
             </DockPanel>
         </Grid>

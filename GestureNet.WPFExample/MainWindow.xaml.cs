@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using GestureNet.IO;
 using GestureNet.Recognisers;
 using GestureNet.Structures;
@@ -23,31 +25,36 @@ namespace GestureNet.WPFExample
     /// </summary>
     public partial class MainWindow : Window
     {
-        private struct TimedPoint
+        private Timer RecordingTimer { get; } = new Timer
         {
-            public DateTime Creation { get; set; }
-            public Point Point { get; set; }
-        }
+            Interval = 10,
+        };
 
-        private Timer RecordingTimer { get; }
-        private List<TimedPoint> Points { get; }
+        private Timer RecognitionTimer { get; } = new Timer
+        {
+            Interval = 100
+        };
+
+        private List<TimedPoint> Points { get; } = new List<TimedPoint>();
 
         private List<Gesture> TrainingSet { get; set; } // training set loaded from XML files
-        
+
         public MainWindow()
         {
             InitializeComponent();
-            
-            RecordingTimer = new Timer()
-            {
-                Interval = 10
-            };
 
             RecordingTimer.Elapsed += RecordingTimer_Elapsed;
-
-            Points = new List<TimedPoint>();
-
-            TrainingSet = GestureLoader.ReadGestures(new FileInfo("gestures.json")).ToList();
+            RecognitionTimer.Elapsed += DetectionTimer_Elapsed;
+            
+            try
+            {
+                TrainingSet = GestureLoader.ReadGestures(new FileInfo("gestures.json")).ToList();
+                RenderControl.Points = () => this.SmoothPoints;
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+            }
         }
 
         private float SmoothDistance { get; } = 10.0f;
@@ -75,6 +82,27 @@ namespace GestureNet.WPFExample
             }
         }
 
+        public object obj = new object();
+
+        private void DetectionTimer_Elapsed(object sender, EventArgs e)
+        {
+            if (Monitor.TryEnter(obj, TimeSpan.FromMilliseconds(5)))
+            {
+                var process = false;
+
+                Dispatcher.Invoke(() =>
+                {
+                    if (chkLiveRecognition.IsChecked.HasValue && chkLiveRecognition.IsChecked.Value)
+                        process = true; 
+                });
+
+                if (process)
+                {
+                    UpdateResults();
+                }
+            }
+        }
+
         private void RecordingTimer_Elapsed(object sender, EventArgs e)
         {
             //Protect against two timer events overlapping
@@ -86,7 +114,7 @@ namespace GestureNet.WPFExample
 
                     Dispatcher.Invoke(() =>
                     {
-                        mousePos = GestureCanvas.PointFromScreen(mousePos);
+                        mousePos = RenderControl.PointFromScreen(mousePos);
                         
                         if (!MouseUtilities.IsMouseButtonDown(MouseButton.Left) &&
                             !MouseUtilities.IsMouseButtonDown(MouseButton.Right))
@@ -94,7 +122,6 @@ namespace GestureNet.WPFExample
                             StopRecording();
                             return;
                         }
-                            
 
                         Points.Add(new TimedPoint
                         {
@@ -106,32 +133,10 @@ namespace GestureNet.WPFExample
                         if (long.TryParse(txtNumeric.Text, out mi))
                             Points.RemoveAll(x => (DateTime.Now - x.Creation).TotalMilliseconds > mi);
 
-                        if (Points.Count > 0)
-                        {
-                            var canvas = GestureCanvas;
-
-                            canvas.Children.Clear();
-
-                            var collection = new PointCollection();
-
-                            foreach (var p in SmoothPoints)
-                                collection.Add(p);
-
-                            var line = new Polyline
-                            {
-                                Points = collection,
-                                Stroke = new SolidColorBrush(Colors.Black),
-                                StrokeThickness = 3
-                            };
-
-                            canvas.Children.Add(line);
-                        }
-
-                        if (chkLiveRecognition.IsChecked.HasValue && chkLiveRecognition.IsChecked.Value)
-                            UpdateResults();
+                        RenderControl.InvalidateVisual();
                     });
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     Debugger.Break();
                 }
@@ -146,8 +151,13 @@ namespace GestureNet.WPFExample
         {
             try
             {
-                ResultsView.ItemsSource = PointCloudRecognizer.Classify(new Gesture(SmoothGesturePoints),
+                var results = PointCloudRecognizer.Classify(new Gesture(SmoothGesturePoints),
                     TrainingSet);
+
+                Dispatcher.Invoke(() =>
+                {
+                    ResultsView.ItemsSource = results;
+                });
             }
             catch (ArgumentException)
             {
@@ -161,13 +171,19 @@ namespace GestureNet.WPFExample
 
         private void GestureCanvas_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
+            StartRecording();
+        }
+
+        private void StartRecording()
+        {
             RecordingTimer.Start();
+            RecognitionTimer.Start();
         }
 
         private void StopRecording()
         {
             RecordingTimer.Stop();
-            GestureCanvas.Children.Clear();
+            RecognitionTimer.Stop();
             Points.Clear();
         }
 
@@ -222,6 +238,56 @@ namespace GestureNet.WPFExample
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public struct TimedPoint
+    {
+        public DateTime Creation { get; set; }
+        public Point Point { get; set; }
+    }
+
+    public class RenderControl : UIElement
+    {
+        public Func<IEnumerable<System.Windows.Point>> Points { get; set; }
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            var myPen = new Pen(Brushes.Black, 10);
+
+            var myBluePen = new Pen(Brushes.LightBlue, 10);
+
+            drawingContext.DrawRectangle(Brushes.LightBlue, myBluePen, new Rect(0, 0, RenderSize.Width, RenderSize.Height));
+
+            if (Points != null)
+            {
+                var points = Points().ToList();
+
+                if (points.Count > 2)
+                {
+                    var pathFigure = new PathFigure
+                    {
+                        IsClosed = false,
+                        IsFilled = false,
+                        StartPoint = points[0],
+                        Segments = new PathSegmentCollection(),
+                    };
+
+                    for (var i = 1; i < points.Count; i++)
+                    {
+                        pathFigure.Segments.Add(new LineSegment()
+                        {
+                            IsSmoothJoin = true,
+                            Point = points[i],
+                            IsStroked =true
+                        });
+                    }
+                    var geometry = new PathGeometry(new List<PathFigure>() {pathFigure});
+                    drawingContext.DrawGeometry(Brushes.Black, myPen, geometry);
+                }
+            }
+            
+            base.OnRender(drawingContext);
         }
     }
 }
