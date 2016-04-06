@@ -73,7 +73,6 @@ namespace GestureNet.Recognisers
         {
             var n = points1.Count; // the two clouds should have the same number of points by now
             var matched = new bool[n]; // matched[i] signals whether point i from the 2nd cloud has been already matched
-            Array.Clear(matched, 0, n); // no points are matched at the beginning
 
             float sum = 0;
                 // computes the sum of distances between matched points (i.e., the distance between the two clouds)
