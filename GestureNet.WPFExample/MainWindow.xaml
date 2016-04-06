@@ -1,0 +1,42 @@
+﻿<Window x:Class="GestureNet.WPFExample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GestureNet.WPFExample"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="1024" Closing="MainWindow_OnClosing">
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="103*"/>
+                <ColumnDefinition Width="414*"/>
+            </Grid.ColumnDefinitions>
+            <DockPanel Margin="10">
+                <Label DockPanel.Dock="Top">Gestures</Label>
+                <StackPanel DockPanel.Dock="Bottom">
+                    <StackPanel  Orientation="Horizontal">
+                        <Label>Live Recognition:</Label>
+                        <CheckBox Name="chkLiveRecognition" VerticalAlignment="Center" IsChecked="True"/>
+                    </StackPanel>
+                    <StackPanel  Orientation="Horizontal">
+                        <Label>Live Recognition:</Label>
+                        <TextBox Name="txtNumeric" VerticalAlignment="Center">2000</TextBox>
+                    </StackPanel>
+                    <DockPanel>
+                        <Label>New Gesture Name:</Label>
+                        <TextBox Name="txtName" VerticalAlignment="Center"/>
+                    </DockPanel>
+                </StackPanel>
+                <StackPanel Margin="5">
+                    <ListView Name="ResultsView"/>
+                </StackPanel>
+            </DockPanel>
+            <DockPanel Grid.Column="1" >
+                <Border>
+                    <Canvas Name="GestureCanvas"  MouseDown="GestureCanvas_OnMouseDown" MouseUp="GestureCanvas_OnMouseUp" Background="LightBlue"/>
+                </Border>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</Window>
