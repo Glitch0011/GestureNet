@@ -25,12 +25,20 @@ namespace GestureNet.Recognisers
         /// <returns></returns>
         public static IEnumerable<Result> Classify(Gesture candidate, IEnumerable<Gesture> trainingSet)
         {
-            return
-                trainingSet.Select(
-                    x => new Result {Name = x.Name, Score = GreedyCloudMatch(candidate.Points, x.Points)})
-                    .OrderBy(x => x.Score);
+            return trainingSet.Select(
+                x => new Result {Name = x.Name, Score = GreedyCloudMatch(candidate.Points, x.Points)})
+                .GroupBy(x => x.Name)
+                .Select(
+                    x =>
+                        new Result
+                        {
+                            Name = x.Key,
+                            Score = x.Sum(y => y.Score)/x.Count(),
+                            SubScores = x.Select(y => y.Score).ToList()
+                        })
+                .OrderBy(x => x.Score);
         }
-
+        
         /// <summary>
         ///     Implements greedy search for a minimum-distance matching between two point clouds
         /// </summary>
