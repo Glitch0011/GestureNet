@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:GestureNet.WPFExample"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1024" Closing="MainWindow_OnClosing">
+    <Window.Resources>
+        <local:ValueConverter x:Key="ScoreConverter" Threshhold="0.2"/>
+    </Window.Resources>
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -27,9 +30,37 @@
                         <Label>New Gesture Name:</Label>
                         <TextBox Name="txtName" VerticalAlignment="Center"/>
                     </DockPanel>
+                    <StackPanel  Orientation="Horizontal">
+                        <Label>Live Recognition:</Label>
+                        <TextBox Name="txtThreshold" VerticalAlignment="Center">0.2</TextBox>
+                    </StackPanel>
+                    <StackPanel  Orientation="Horizontal">
+                        <Label>Status:</Label>
+                        <Label Name="lblSTatus">Status:</Label>
+                    </StackPanel>
                 </StackPanel>
                 <StackPanel Margin="5">
-                    <ListView Name="ResultsView"/>
+                    <ListView Name="ResultsView">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <WrapPanel>
+                                    <Label Name="Score" Content="{Binding}"></Label>
+                                </WrapPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger>
+                                        <DataTrigger.Binding>
+                                            <MultiBinding Converter="{StaticResource ScoreConverter}">
+                                                <Binding/>
+                                                <Binding ElementName="txtThreshold"/>
+                                            </MultiBinding>
+                                        </DataTrigger.Binding>
+                                        <DataTrigger.Value>true</DataTrigger.Value>
+                                        <Setter TargetName="Score" Property="Background" Value="LightGreen"></Setter>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackPanel>
             </DockPanel>
             <DockPanel Grid.Column="1" >

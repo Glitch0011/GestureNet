@@ -193,4 +193,27 @@ namespace GestureNet.WPFExample
             GestureLoader.SaveGestures(new FileInfo("gestures.json"), TrainingSet);
         }
     }
+
+    public class ValueConverter : IMultiValueConverter
+    {
+        public string Threshhold { get; set; }
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            var result = values.FirstOrDefault() as Result;
+
+            float threshold;
+            var textBox = values.Skip(1).FirstOrDefault() as TextBox;
+
+            if (textBox != null && float.TryParse(textBox.Text, out threshold))
+                return result != null && result.Score < threshold;
+            else
+                return false;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
