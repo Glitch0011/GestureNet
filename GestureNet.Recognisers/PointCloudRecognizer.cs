@@ -83,7 +83,7 @@ namespace GestureNet.Recognisers
                 var index = -1;
                 var minDistance = float.MaxValue;
 
-                for (var j = 0; j < Math.Min(points1.Count, points2.Count); j++)
+                for (var j = 0; j < points1.Count; j++)
                     if (!matched[j])
                     {
                         // use squared Euclidean distance to save some processing time
