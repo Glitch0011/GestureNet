@@ -68,6 +68,7 @@ namespace GestureNet.Example
                 else if (args.Button == MouseButtons.Right)
                 {
                     trainingSet.Add(new Gesture(points, textBox1.Text));
+                    points.Clear();
                 }
             };
 
