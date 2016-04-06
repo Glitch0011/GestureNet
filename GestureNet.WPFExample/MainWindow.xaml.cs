@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using GestureNet.IO;
 using GestureNet.Recognisers;
 using GestureNet.Structures;
@@ -204,81 +200,6 @@ namespace GestureNet.WPFExample
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
             GestureLoader.SaveGestures(new FileInfo("gestures.json"), TrainingSet);
-        }
-    }
-
-    public class ValueConverter : IMultiValueConverter
-    {
-        public string Threshhold { get; set; }
-
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            var result = values.FirstOrDefault() as Result;
-
-            float threshold;
-            var textBox = values.Skip(1).FirstOrDefault() as TextBox;
-
-            if (textBox != null && float.TryParse(textBox.Text, out threshold))
-                return result != null && result.Score < threshold;
-            return false;
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public struct TimedPoint
-    {
-        public DateTime Creation { get; set; }
-        public Vector2 Point { get; set; }
-    }
-
-    public class RenderControl : UIElement
-    {
-        public Func<IEnumerable<Point>> Points { get; set; }
-
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            var myPen = new Pen(Brushes.Black, 10);
-            var myBluePen = new Pen(Brushes.LightBlue, 10);
-
-            drawingContext.DrawRectangle(Brushes.LightBlue, myBluePen,
-                new Rect(0, 0, RenderSize.Width, RenderSize.Height));
-
-            if (Points != null)
-            {
-                var points = Points().ToList();
-
-                if (points.Count > 2)
-                {
-                    var pathFigure = new PathFigure
-                    {
-                        IsClosed = false,
-                        IsFilled = false,
-                        StartPoint = points[0],
-                        Segments = new PathSegmentCollection()
-                    };
-
-                    for (var i = 1; i < points.Count; i++)
-                    {
-                        pathFigure.Segments.Add(new LineSegment
-                        {
-                            IsSmoothJoin = true,
-                            Point = points[i],
-                            IsStroked = true
-                        });
-                    }
-
-                    drawingContext.DrawGeometry(Brushes.Black, myPen,
-                        new PathGeometry(new List<PathFigure> {pathFigure}));
-
-                    drawingContext.DrawEllipse(Brushes.Black, myPen, points.Last(), 5, 5);
-                }
-            }
-
-            base.OnRender(drawingContext);
         }
     }
 }
