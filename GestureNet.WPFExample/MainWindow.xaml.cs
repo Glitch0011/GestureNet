@@ -20,53 +20,35 @@ using Timer = System.Timers.Timer;
 namespace GestureNet.WPFExample
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         private Timer RecordingTimer { get; } = new Timer
         {
-            Interval = 10,
+            Interval = 10
         };
 
         private Timer RecognitionTimer { get; } = new Timer
         {
-            Interval = 200
+            Interval = 0
         };
 
         private List<TimedPoint> Points { get; } = new List<TimedPoint>();
 
-        private List<Gesture> TrainingSet { get; set; } // training set loaded from XML files
-
-        public MainWindow()
-        {
-            InitializeComponent();
-
-            RecordingTimer.Elapsed += RecordingTimer_Elapsed;
-            RecognitionTimer.Elapsed += DetectionTimer_Elapsed;
-            
-            try
-            {
-                TrainingSet = GestureLoader.ReadGestures(new FileInfo("gestures.json")).ToList();
-                RenderControl.Points = () => this.SmoothPoints;
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-            }
-        }
+        private List<Gesture> TrainingSet { get; }
 
         private float SmoothDistance { get; } = 10.0f;
         private float Smoothness { get; } = 0.1f;
 
-        private IEnumerable<System.Windows.Point> SmoothPoints
+        private IEnumerable<Point> SmoothPoints
         {
             get
             {
                 return
-                    CatmullRom.Smooth(Points.Select(x => new Vector2((float)x.Point.X, (float)x.Point.Y)).ToList(), SmoothDistance,
+                    CatmullRom.Smooth(Points.Select(x => new Vector2(x.Point.X, x.Point.Y)).ToList(), SmoothDistance,
                         Smoothness)
-                        .Select(p => new System.Windows.Point(p.X, p.Y)).ToList();
+                        .Select(p => new Point(p.X, p.Y)).ToList();
             }
         }
 
@@ -80,6 +62,24 @@ namespace GestureNet.WPFExample
             }
         }
 
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            RecordingTimer.Elapsed += RecordingTimer_Elapsed;
+            RecognitionTimer.Elapsed += DetectionTimer_Elapsed;
+
+            try
+            {
+                TrainingSet = GestureLoader.ReadGestures(new FileInfo("gestures.json")).ToList();
+                RenderControl.Points = () => SmoothPoints;
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+            }
+        }
+
         private void DetectionTimer_Elapsed(object sender, EventArgs e)
         {
             var process = false;
@@ -87,7 +87,7 @@ namespace GestureNet.WPFExample
             Dispatcher.Invoke(() =>
             {
                 if (chkLiveRecognition.IsChecked.HasValue && chkLiveRecognition.IsChecked.Value)
-                    process = true; 
+                    process = true;
             });
 
             if (process)
@@ -108,7 +108,7 @@ namespace GestureNet.WPFExample
                     Dispatcher.Invoke(() =>
                     {
                         mousePos = RenderControl.PointFromScreen(mousePos);
-                        
+
                         if (!MouseUtilities.IsMouseButtonDown(MouseButton.Left) &&
                             !MouseUtilities.IsMouseButtonDown(MouseButton.Right))
                         {
@@ -147,14 +147,10 @@ namespace GestureNet.WPFExample
                 var results = PointCloudRecognizer.Classify(new Gesture(SmoothGesturePoints),
                     TrainingSet);
 
-                Dispatcher.Invoke(() =>
-                {
-                    ResultsView.ItemsSource = results;
-                });
+                Dispatcher.Invoke(() => { ResultsView.ItemsSource = results; });
             }
             catch (ArgumentException)
             {
-                return;
             }
             catch (Exception e)
             {
@@ -224,8 +220,7 @@ namespace GestureNet.WPFExample
 
             if (textBox != null && float.TryParse(textBox.Text, out threshold))
                 return result != null && result.Score < threshold;
-            else
-                return false;
+            return false;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -242,14 +237,15 @@ namespace GestureNet.WPFExample
 
     public class RenderControl : UIElement
     {
-        public Func<IEnumerable<System.Windows.Point>> Points { get; set; }
+        public Func<IEnumerable<Point>> Points { get; set; }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             var myPen = new Pen(Brushes.Black, 10);
             var myBluePen = new Pen(Brushes.LightBlue, 10);
 
-            drawingContext.DrawRectangle(Brushes.LightBlue, myBluePen, new Rect(0, 0, RenderSize.Width, RenderSize.Height));
+            drawingContext.DrawRectangle(Brushes.LightBlue, myBluePen,
+                new Rect(0, 0, RenderSize.Width, RenderSize.Height));
 
             if (Points != null)
             {
@@ -262,26 +258,26 @@ namespace GestureNet.WPFExample
                         IsClosed = false,
                         IsFilled = false,
                         StartPoint = points[0],
-                        Segments = new PathSegmentCollection(),
+                        Segments = new PathSegmentCollection()
                     };
 
                     for (var i = 1; i < points.Count; i++)
                     {
-                        pathFigure.Segments.Add(new LineSegment()
+                        pathFigure.Segments.Add(new LineSegment
                         {
                             IsSmoothJoin = true,
                             Point = points[i],
-                            IsStroked =true
+                            IsStroked = true
                         });
                     }
 
                     drawingContext.DrawGeometry(Brushes.Black, myPen,
-                        new PathGeometry(new List<PathFigure>() {pathFigure}));
+                        new PathGeometry(new List<PathFigure> {pathFigure}));
 
                     drawingContext.DrawEllipse(Brushes.Black, myPen, points.Last(), 5, 5);
                 }
             }
-            
+
             base.OnRender(drawingContext);
         }
     }
