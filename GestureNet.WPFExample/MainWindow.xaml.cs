@@ -274,8 +274,11 @@ namespace GestureNet.WPFExample
                             IsStroked =true
                         });
                     }
-                    var geometry = new PathGeometry(new List<PathFigure>() {pathFigure});
-                    drawingContext.DrawGeometry(Brushes.Black, myPen, geometry);
+
+                    drawingContext.DrawGeometry(Brushes.Black, myPen,
+                        new PathGeometry(new List<PathFigure>() {pathFigure}));
+
+                    drawingContext.DrawEllipse(Brushes.Black, myPen, points.Last(), 5, 5);
                 }
             }
             
