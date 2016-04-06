@@ -27,7 +27,7 @@ namespace GestureNet.WPFExample
 
         private Timer RecognitionTimer { get; } = new Timer
         {
-            Interval = 0
+            Interval = 200
         };
 
         private List<TimedPoint> Points { get; } = new List<TimedPoint>();
