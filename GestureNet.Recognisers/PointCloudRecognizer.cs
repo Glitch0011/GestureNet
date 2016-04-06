@@ -10,16 +10,6 @@ namespace GestureNet.Recognisers
     /// </summary>
     public static class PointCloudRecognizer
     {
-        public class Result
-        {
-            public string Name;
-            public float Score;
-
-            public override string ToString()
-            {
-                return Name + ": " + Score;
-            }
-        }
 
         /// <summary>
         ///     Main function of the $P recognizer.
