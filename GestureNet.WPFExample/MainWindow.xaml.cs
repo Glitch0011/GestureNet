@@ -158,7 +158,7 @@ namespace GestureNet.WPFExample
             {
                 return;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Debugger.Break();
             }
