@@ -38,8 +38,6 @@ namespace GestureNet.IO
 					yield return new Gesture(pList, gestureName.InnerText);
 				}
 			}
-
-			//yield return new Gesture(points.ToArray(), gestureName);
 		}
 
 		public void Save(IEnumerable<Gesture> gestures, FileInfo file)
