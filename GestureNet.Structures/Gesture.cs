@@ -22,7 +22,7 @@ namespace GestureNet.Structures
         /// </summary>
         /// <param name="points"></param>
         /// <param name="gestureName"></param>
-        public Gesture(IReadOnlyList<Vector2> points, string gestureName = "")
+        public Gesture(IList<Vector2> points, string gestureName = "")
         {
             Name = gestureName;
 
@@ -48,7 +48,7 @@ namespace GestureNet.Structures
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-        private static List<Vector2> Scale(IReadOnlyList<Vector2> points)
+        private static List<Vector2> Scale(IList<Vector2> points)
         { 
             float minx = float.MaxValue, miny = float.MaxValue, maxx = float.MinValue, maxy = float.MinValue;
             foreach (var t in points)
@@ -73,7 +73,7 @@ namespace GestureNet.Structures
         /// <param name="points"></param>
         /// <param name="p"></param>
         /// <returns></returns>
-        private static List<Vector2> TranslateTo(IReadOnlyList<Vector2> points, Vector2 p)
+        private static List<Vector2> TranslateTo(IList<Vector2> points, Vector2 p)
         {
             return points.Select(t => new Vector2(t.X - p.X, t.Y - p.Y)).Cast<Vector2>().ToList();
         }
@@ -102,7 +102,7 @@ namespace GestureNet.Structures
         /// <param name="points"></param>
         /// <param name="n"></param>
         /// <returns></returns>
-        private static List<Vector2> Resample(IReadOnlyList<Vector2> points, int n)
+        private static List<Vector2> Resample(IList<Vector2> points, int n)
         {
             var newPoints = new List<Vector2>(n)
             {
@@ -157,7 +157,7 @@ namespace GestureNet.Structures
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-        private static float PathLength(IReadOnlyList<Vector2> points)
+        private static float PathLength(IList<Vector2> points)
         {
             float length = 0;
 

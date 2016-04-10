@@ -55,7 +55,7 @@ namespace GestureNet.WPFExample
         /// <summary>
         /// Run the points through a CatmullRom filter
         /// </summary>
-        private IReadOnlyList<Vector2> SmoothGesturePoints
+        private IList<Vector2> SmoothGesturePoints
         {
             get
             {
