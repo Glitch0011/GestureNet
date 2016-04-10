@@ -31,7 +31,7 @@ namespace GestureNet.WPFExample
 
         private List<TimedPoint> Points { get; } = new List<TimedPoint>();
 
-        private List<Gesture> TrainingSet { get; }
+        private List<Gesture> TrainingSet { get;} 
 
         /// <summary>
         /// Minimum distance between points when smoothed
@@ -84,6 +84,8 @@ namespace GestureNet.WPFExample
             }
 
 			RenderControl.Points = () => SmoothPoints;
+			RenderControl.Gestures = () => TrainingSet;
+			RenderControl.SelectedGesture = () => SelectedLabel;
 		}
 
         /// <summary>
@@ -248,10 +250,14 @@ namespace GestureNet.WPFExample
             GestureLoader.SaveGestures(new FileInfo("gestures.xml"), TrainingSet);
         }
 
+		public string SelectedLabel { get; set; }
+
 		private void Score_MouseDown(object sender, MouseButtonEventArgs e)
 		{
 			var label = (System.Windows.Controls.Label)sender;
 			txtName.Text = ((Result)label.Content).Name;
+			SelectedLabel = txtName.Text;
+			RenderControl.InvalidateVisual();
 		}
 	}
 }
