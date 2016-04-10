@@ -15,7 +15,13 @@ namespace GestureNet.IO
             }
         }
 
-        public static void SaveGestures(FileInfo file, IEnumerable<Gesture> gestures)
+		public static IEnumerable<Gesture> ReadGestures(string text)
+		{
+			foreach (var val in new XmlLoader().Load(text))
+				yield return val;
+		}
+
+		public static void SaveGestures(FileInfo file, IEnumerable<Gesture> gestures)
         {
             new XmlLoader().Save(gestures, file);
         }
@@ -24,6 +30,7 @@ namespace GestureNet.IO
     internal interface ILoader
     {
         IEnumerable<Gesture> Load(FileInfo file);
-        void Save(IEnumerable<Gesture> gestures, FileInfo file);
+		IEnumerable<Gesture> Load(string text);
+		void Save(IEnumerable<Gesture> gestures, FileInfo file);
     }
 }

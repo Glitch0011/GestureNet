@@ -11,9 +11,14 @@ namespace GestureNet.IO
 	{
 		public IEnumerable<Gesture> Load(FileInfo file)
 		{
+			return Load(File.ReadAllText(file.FullName));
+		}
+
+		public IEnumerable<Gesture> Load(string text)
+		{
 			XmlDocument doc = new XmlDocument();
 
-			doc.LoadXml(File.ReadAllText(file.FullName));
+			doc.LoadXml(text);
 
 			var gestures = doc["Gestures"];
 
