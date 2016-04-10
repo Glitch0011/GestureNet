@@ -26,11 +26,4 @@ namespace GestureNet.IO
             new XmlLoader().Save(gestures, file);
         }
     }
-
-    internal interface ILoader
-    {
-        IEnumerable<Gesture> Load(FileInfo file);
-		IEnumerable<Gesture> Load(string text);
-		void Save(IEnumerable<Gesture> gestures, FileInfo file);
-    }
 }
