@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace GestureNet.Structures
 {
@@ -36,7 +35,7 @@ namespace GestureNet.Structures
 
 			if (Points.Count == 1)
 			{
-				if (float.IsNaN(Points[0].X))
+				if (float.IsNaN(Points[0].x))
 					throw new ArgumentException();
 				if (float.IsNaN(Points[0].Y))
 					throw new ArgumentException();
@@ -53,16 +52,16 @@ namespace GestureNet.Structures
             float minx = float.MaxValue, miny = float.MaxValue, maxx = float.MinValue, maxy = float.MinValue;
             foreach (var t in points)
             {
-                if (minx > t.X) minx = t.X;
+                if (minx > t.x) minx = t.x;
                 if (miny > t.Y) miny = t.Y;
-                if (maxx < t.X) maxx = t.X;
+                if (maxx < t.x) maxx = t.x;
                 if (maxy < t.Y) maxy = t.Y;
             }
 
             var newPoints = new List<Vector2>(points.Count);
             var scale = Math.Max(maxx - minx, maxy - miny);
 
-            newPoints.AddRange(points.Select(t => new Vector2((t.X - minx)/scale, (t.Y - miny)/scale)));
+            newPoints.AddRange(points.Select(t => new Vector2((t.x - minx)/scale, (t.Y - miny)/scale)));
 
             return newPoints;
         }
@@ -75,7 +74,7 @@ namespace GestureNet.Structures
         /// <returns></returns>
         private static List<Vector2> TranslateTo(IList<Vector2> points, Vector2 p)
         {
-            return points.Select(t => new Vector2(t.X - p.X, t.Y - p.Y)).Cast<Vector2>().ToList();
+            return points.Select(t => new Vector2(t.x - p.x, t.Y - p.Y)).Cast<Vector2>().ToList();
         }
 
         /// <summary>
@@ -83,13 +82,13 @@ namespace GestureNet.Structures
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-        private static Vector2 Centroid(IReadOnlyCollection<Vector2> points)
+        private static Vector2 Centroid(IList<Vector2> points)
         {
             float cx = 0, cy = 0;
 
             foreach (var t in points)
             {
-                cx += t.X;
+                cx += t.x;
                 cy += t.Y;
             }
 
@@ -106,7 +105,7 @@ namespace GestureNet.Structures
         {
             var newPoints = new List<Vector2>(n)
             {
-                new Vector2(points[0].X, points[0].Y)
+                new Vector2(points[0].x, points[0].Y)
             };
 
             var numPoints = 1;
@@ -131,7 +130,7 @@ namespace GestureNet.Structures
                         numPoints++;
 
                         newPoints.Add(new Vector2(
-                            (1.0f - t)*firstPoint.X + t*points[i].X,
+                            (1.0f - t)*firstPoint.x + t*points[i].x,
                             (1.0f - t)*firstPoint.Y + t*points[i].Y));
 
                         // update partial length
@@ -147,7 +146,7 @@ namespace GestureNet.Structures
 
             if (numPoints == n - 1)
                 // sometimes we fall a rounding-error short of adding the last point, so add it if so
-                newPoints.Add(new Vector2(points[points.Count - 1].X, points[points.Count - 1].Y));
+                newPoints.Add(new Vector2(points[points.Count - 1].x, points[points.Count - 1].Y));
 
             return newPoints;
         }

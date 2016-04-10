@@ -1,5 +1,5 @@
+using GestureNet.Structures;
 using System;
-using System.Numerics;
 
 namespace GestureNet.WPFExample
 {

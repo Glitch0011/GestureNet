@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using GestureNet.Structures;
 
 namespace GestureNet.Recognisers
@@ -72,6 +71,9 @@ namespace GestureNet.Recognisers
         /// <returns></returns>
         private static float CloudDistance(IList<Vector2> points1, IList<Vector2> points2, int startIndex)
         {
+			if (points1.Count != points2.Count)
+				return float.MaxValue;
+
             var n = points1.Count; // the two clouds should have the same number of points by now
 
             var matched = new bool[n]; // matched[i] signals whether point i from the 2nd cloud has been already matched
