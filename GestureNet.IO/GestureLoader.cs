@@ -12,15 +12,12 @@ namespace GestureNet.IO
             {
                 foreach (var val in new XmlLoader().Load(fileInfo))
                     yield return val;
-
-                foreach (var val in new JsonLoader().Load(fileInfo))
-                    yield return val;
             }
         }
 
         public static void SaveGestures(FileInfo file, IEnumerable<Gesture> gestures)
         {
-            new JsonLoader().Save(gestures, file);
+            new XmlLoader().Save(gestures, file);
         }
     }
 

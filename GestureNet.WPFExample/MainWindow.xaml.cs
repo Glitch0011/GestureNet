@@ -76,14 +76,15 @@ namespace GestureNet.WPFExample
 
             try
             {
-                TrainingSet = GestureLoader.ReadGestures(new FileInfo("gestures.json")).ToList();
-                RenderControl.Points = () => SmoothPoints;
-            }
+				TrainingSet = GestureLoader.ReadGestures(new FileInfo("gestures.xml")).ToList();
+			}
             catch (Exception)
             {
-                Debugger.Break();
+				TrainingSet = new List<Gesture>();
             }
-        }
+
+			RenderControl.Points = () => SmoothPoints;
+		}
 
         /// <summary>
         /// Detect weither we are performing live-recognition, and if so, asyncronously to the UI thread, try recognise the current points
@@ -244,7 +245,7 @@ namespace GestureNet.WPFExample
         /// <param name="e"></param>
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
-            GestureLoader.SaveGestures(new FileInfo("gestures.json"), TrainingSet);
+            GestureLoader.SaveGestures(new FileInfo("gestures.xml"), TrainingSet);
         }
     }
 }

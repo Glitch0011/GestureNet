@@ -1,12 +1,12 @@
 ﻿using GestureNet.Structures;
-using Newtonsoft.Json.Linq;
+//using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace GestureNet.IO
 {
-	internal class JsonLoader : ILoader
+	/*internal class JsonLoader : ILoader
 	{
 		public IEnumerable<Gesture> Load(FileInfo file)
 		{
@@ -23,5 +23,5 @@ namespace GestureNet.IO
 
 			File.WriteAllText(file.FullName, jObject.ToString());
 		}
-	}
+	}*/
 }
