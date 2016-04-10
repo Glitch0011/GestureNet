@@ -45,7 +45,7 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <WrapPanel>
-                                    <Label Name="Score" Content="{Binding}"></Label>
+                                    <Label Name="Score" Content="{Binding}" MouseDown="Score_MouseDown"></Label>
                                 </WrapPanel>
                                 <DataTemplate.Triggers>
                                     <DataTrigger>

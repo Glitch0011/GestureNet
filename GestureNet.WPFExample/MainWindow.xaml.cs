@@ -247,5 +247,11 @@ namespace GestureNet.WPFExample
         {
             GestureLoader.SaveGestures(new FileInfo("gestures.xml"), TrainingSet);
         }
-    }
+
+		private void Score_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			var label = (System.Windows.Controls.Label)sender;
+			txtName.Text = ((Result)label.Content).Name;
+		}
+	}
 }
